@@ -1,38 +1,46 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-// const bcrypt = require("bcrypt");
-const UserSchema = new Schema(
-  {
-    emailAddress: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    position:{
-        enum: ['admin', 'user'],
-        default: 'user',   
-    },
-    userName: {
-      type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    isBlocked: {
-      type: Boolean,
-      default: false,
-    }
+const bcrypt = require("bcrypt");
+
+const UserSchema = new Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
   },
-  {
-    timestamps: true
+  password: {
+    type: String,
+    required: true,
+    select: false,
+  },
+  position: {
+    type: String,
+    enum: ["admin", "creator", "user"],
+    default: "user",
+  },
+  posts: {
+    type: Schema.Types.ObjectId,
+    ref: "Post",
+    // required: true,
+  },
+});
+
+UserSchema.pre("save", async function () {
+  const currentDocument = this;
+  // console.log(currentDocument);
+  const modifiedCheck = currentDocument.isModified("password");
+  if (modifiedCheck) {
+    const hashedPassword = await bcrypt.hash(currentDocument.password, 10);
+    currentDocument.password = hashedPassword;
   }
-);
+});
+
+UserSchema.methods.checkPassword = async function (password) {
+  const currentDocument = this;
+  // console.log(currentDocument)
+  const isMatch = await bcrypt.compare(password, currentDocument.password);
+  return isMatch;
+};
 
 // UserSchema.pre("save", async function (next) {
 //   if (!this.isModified("password")) return next();

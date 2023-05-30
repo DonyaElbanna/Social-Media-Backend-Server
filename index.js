@@ -1,25 +1,23 @@
-const app = require("./app");
-const http = require("http");
+// const app = require("./app");
+// const http = require("http");
 const mongoose = require("mongoose");
 const config = require("./config/default.config").config;
 const DB_CONNECTED = require("./utils/namespace.util").namespace.DB_CONNECTED;
-const { ErrorHandler } = require("./lib/errorhandler.lib");
+// const { ErrorHandler } = require("./lib/errorhandler.lib");
 
 mongoose
-  .connect(
-    `mongodb+srv://${config.db.username}:${config.db.password}@dubaicompany.r5feirf.mongodb.net/dubai?retryWrites=true&w=majority`
-  )
+  .connect(config.db.uri)
   .then(() => {
     console.log(DB_CONNECTED);
-    InitServer();
+    // InitServer();
   })
   .catch((error) => {
     console.log(error);
   });
-const InitServer = () => {
-  http
-    .createServer(app)
-    .listen(config.server.port, () =>
-      console.log(`Server is running on port ${config.server.port}`)
-    );
-};
+// const InitServer = () => {
+//   http
+//     .createServer(app)
+//     .listen(config.server.port, () =>
+//       console.log(`Server is running on port ${config.server.port}`)
+//     );
+// };

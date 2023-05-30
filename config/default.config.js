@@ -16,10 +16,7 @@ const DB_LOCAL_HOST = process.env.DB_LOCAL_HOST;
 const DB_LOCAL_PROTOCOL = process.env.DB_LOCAL_PROTOCOL;
 const DB_LIVE_HOST = process.env.DB_LIVE_HOST;
 const DB_LIVE_PROTOCOL = process.env.DB_LIVE_PROTOCOL;
-const DB_URI =
-  env === "production"
-    ? `${DB_LIVE_PROTOCOL}${DB_USERNANE}:${DB_PASSWORD}@${DB_LIVE_HOST}/${DB_NAME}`
-    : `${DB_LOCAL_PROTOCOL}${DB_LOCAL_HOST}/${DB_NAME}`;
+const DB_URI = process.env.DB_URL;
 const DB = {
   username: DB_USERNANE,
   password: DB_PASSWORD,
@@ -30,7 +27,8 @@ const DB = {
 //server
 const SERVER_PORT = process.env.SERVER_PORT || 9999;
 const SERVER_CORS_ORIGIN = process.env.SERVER_CORS_ORIGIN || "*";
-const SERVER_TOKEN_SECRET =process.env.SERVER_TOKEN_SECRET || "somesupersecret";
+const SERVER_TOKEN_SECRET =
+  process.env.SERVER_TOKEN_SECRET || "somesupersecret";
 const SERVER_TOKEN_ISSUER = process.env.SERVER_TOKEN_ISSUER || "error-404";
 const SERVER_COOKIE_SECRET = process.env.SERVER_COOKIE_SECRET || "secret";
 const SERVER_COOKIE_DOMAIN = process.env.SERVER_COOKIE_DOMAIN || "localhost";
@@ -69,7 +67,7 @@ const NODEMAILER = {
   secure: NODEMAILER_SECURE === "true" ? true : false,
   user: NODEMAILER_AUTH_USER,
   password: NODEMAILER_AUTH_PASSWORD,
-}; 
+};
 
 // EXPORT VARIABLES
 exports.config = {
