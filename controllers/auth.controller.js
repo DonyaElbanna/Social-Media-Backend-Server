@@ -1,5 +1,7 @@
 const User = require("../models/user.model");
 const AppError = require("../utils/Error");
+const config = require("../config/default.config").config;
+const jwt = require("jsonwebtoken");
 
 const signIn = async (req, res, next) => {
   const { email, password } = req.body;
@@ -15,7 +17,11 @@ const signIn = async (req, res, next) => {
   }
   loggedUser.password = undefined;
 
-  res.send(loggedUser);
+  const token = jwt.sign({ id: loggedUser.id }, config.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+
+  res.send({ loggedUser, token });
 };
 
 module.exports = { signIn };

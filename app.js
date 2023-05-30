@@ -10,11 +10,12 @@ const commentRoutes = require("./routes/comment.routes");
 // const { config } = require("./config/default.config");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ extended: true }));
+const verifyToken = require("./utils/tokenVerification");
 
 // routes
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
-app.use("/post", postRoutes);
+app.use("/post", verifyToken, postRoutes);
 app.use("/comment", commentRoutes);
 
 // HANDLE 404
@@ -41,7 +42,6 @@ app.use((err, req, res, next) => {
     message: err?.message || "internal server error",
   });
 });
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

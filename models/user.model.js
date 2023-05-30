@@ -23,6 +23,7 @@ const UserSchema = new Schema({
     ref: "Post",
     // required: true,
   },
+  // image is required
 });
 
 UserSchema.pre("save", async function () {
