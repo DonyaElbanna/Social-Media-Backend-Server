@@ -1,7 +1,7 @@
 const app = require("./app");
 // const http = require("http");
 const mongoose = require("mongoose");
-const config = require("./config/default.config").config;
+const {config} = require("./config/default.config");
 const DB_CONNECTED = require("./utils/namespace.util").namespace.DB_CONNECTED;
 const { ErrorHandler } = require("./lib/errorhandler.lib");
 

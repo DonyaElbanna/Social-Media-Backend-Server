@@ -69,14 +69,11 @@ const NODEMAILER = {
   password: NODEMAILER_AUTH_PASSWORD,
 };
 
-// JWT
-JWT_SECRET = process.env.JWT_SECRET;
 
 // EXPORT VARIABLES
 exports.config = {
   db: DB,
   server: SERVER,
   nodemailer: NODEMAILER,
-  client: CLIENT,
-  JWT_SECRET
+  client: CLIENT
 };
