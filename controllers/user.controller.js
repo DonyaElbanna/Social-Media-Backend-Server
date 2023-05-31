@@ -8,7 +8,7 @@ const getAllUsers = async (req, res, next) => {
   if (!users) {
     return next(new AppError("Something went wrong", 404));
   }
-  res.send(users);
+  res.status(200).json({ users });
 };
 
 const getSingleUser = async (req, res, next) => {
@@ -21,7 +21,7 @@ const getSingleUser = async (req, res, next) => {
   } catch (err) {
     return next(new AppError("User not found", 404));
   }
-  res.send(user);
+  res.status(200).json({ user });
 };
 
 const addUser = async (req, res, next) => {
@@ -33,9 +33,10 @@ const addUser = async (req, res, next) => {
   }
   const newUser = await User.create({ email, password });
   newUser.password = undefined;
-  res.send(newUser);
+  res.status(201).json(newUser);
 };
 
+// only logged user can edit their info
 const editUser = async (req, res, next) => {
   const { id } = req.params;
   const { email, password } = req.body;
@@ -52,7 +53,7 @@ const editUser = async (req, res, next) => {
       }
       await editedUser.save();
       editedUser.password = undefined;
-      res.send(editedUser);
+      res.status(200).json({ editedUser });
     } catch (err) {
       return next(new AppError("Something went wrong", 404));
     }
@@ -61,6 +62,7 @@ const editUser = async (req, res, next) => {
   }
 };
 
+// only admin or logged user can delete the user
 const deleteUser = async (req, res, next) => {
   const { id } = req.params;
   const loggedUser = req.user;
@@ -68,7 +70,7 @@ const deleteUser = async (req, res, next) => {
   try {
     if (loggedUser.role == "admin" || loggedUser.id == id) {
       const deletedUser = await User.findByIdAndDelete(id);
-      res.send(deletedUser);
+      res.status(200).json({ deletedUser });
     } else {
       return next(new AppError("invalid token", 404));
     }
@@ -77,4 +79,34 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllUsers, getSingleUser, addUser, editUser, deleteUser };
+// only user can edit their avatar
+const editAvatar = async (req, res, next) => {
+  const { id } = req.params;
+  const { avatar } = req.body;
+  const loggedUser = req.user;
+  if (!avatar) {
+    return next(new AppError("No picture provided", 404));
+  } else if (loggedUser.id == id) {
+    try {
+      const editedUser = await User.findById(id);
+      if (editedUser.avatar !== avatar) {
+        editedUser.avatar = avatar;
+      }
+      await editedUser.save();
+      res.status(200).json({ editedUser });
+    } catch (err) {
+      return next(new AppError("Something went wrong", 404));
+    }
+  } else {
+    return next(new AppError("invalid token", 404));
+  }
+};
+
+module.exports = {
+  getAllUsers,
+  getSingleUser,
+  addUser,
+  editUser,
+  deleteUser,
+  editAvatar,
+};

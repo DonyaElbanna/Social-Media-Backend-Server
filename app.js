@@ -5,7 +5,6 @@ const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const postRoutes = require("./routes/post.routes");
 const commentRoutes = require("./routes/comment.routes");
-// const adminRoutes = require("./routes/admin.route")
 const { config } = require("./config/default.config");
 const port = config.server.port;
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,7 +15,7 @@ const verifyToken = require("./utils/tokenVerification");
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/post", verifyToken, postRoutes);
-app.use("/comment", commentRoutes);
+app.use("/post", verifyToken, commentRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
