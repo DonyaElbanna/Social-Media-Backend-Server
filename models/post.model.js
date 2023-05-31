@@ -17,6 +17,12 @@ const PostSchema = new Schema({
       ref: "Comment",
     },
   ],
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Review",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Post", PostSchema);
