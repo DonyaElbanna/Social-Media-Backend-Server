@@ -23,11 +23,12 @@ const UserSchema = new Schema({
     enum: ["admin", "creator", "user"],
     default: "user",
   },
-  posts: {
-    type: Schema.Types.ObjectId,
-    ref: "Post",
-    // required: true,
-  },
+  posts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
   // image is required
 });
 

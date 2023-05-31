@@ -1,10 +1,9 @@
 const User = require("../models/user.model");
 const AppError = require("../utils/Error");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 const getAllUsers = async (req, res, next) => {
-  const users = await User.find();
+  const users = await User.find().populate("posts");
   if (!users) {
     return next(new AppError("Something went wrong", 404));
   }

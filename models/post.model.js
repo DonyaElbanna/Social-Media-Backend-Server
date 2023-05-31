@@ -11,11 +11,12 @@ const PostSchema = new Schema({
     ref: "User",
     required: true,
   },
-  comments: {
-    type: Schema.Types.ObjectId,
-    ref: "Comment",
-    // required: true,
-  },
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Post", PostSchema);

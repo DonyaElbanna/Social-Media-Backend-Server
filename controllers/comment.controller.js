@@ -1,5 +1,6 @@
 const Comment = require("../models/comment.model");
 const AppError = require("../utils/Error");
+const Post = require("../models/post.model");
 
 const getAllComments = async (req, res, next) => {
   const { postid } = req.params;
@@ -39,7 +40,12 @@ const addComment = async (req, res, next) => {
     post: postid,
     user: user.id,
   });
-  res.status(200).send(newComment);
+  const updatedPost = await Post.findOneAndUpdate(
+    { _id: postid },
+    { $addToSet: { comments: newComment._id } },
+    { new: true }
+  );
+  res.status(200).json({ newComment, updatedPost });
 };
 
 // only logged user can edit their own comments
