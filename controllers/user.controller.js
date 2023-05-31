@@ -44,16 +44,8 @@ const editUser = async (req, res, next) => {
   if (loggedUser.id == id) {
     try {
       const editedUser = await User.findById(id).select("+password");
-      // if (!editedUser) {
-      //   return next(new AppError("User not found", 404));
-      // }
       if (editedUser.email !== email) {
         editedUser.email = email;
-      }
-      if (password.length < 6 || password.length > 20) {
-        return next(
-          new AppError("Password has to be 6 to 20 characters long", 404)
-        );
       }
       if (!(await bcrypt.compare(password, editedUser.password))) {
         editedUser.password = password;
@@ -74,7 +66,7 @@ const deleteUser = async (req, res, next) => {
   const loggedUser = req.user;
 
   try {
-    if (loggedUser.position == "admin" || loggedUser.id == id) {
+    if (loggedUser.role == "admin" || loggedUser.id == id) {
       const deletedUser = await User.findByIdAndDelete(id);
       res.send(deletedUser);
     } else {

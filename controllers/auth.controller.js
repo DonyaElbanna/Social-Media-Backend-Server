@@ -19,7 +19,7 @@ const login = async (req, res, next) => {
   loggedUser.password = undefined;
 
   const token = jwt.sign(
-    { id: loggedUser.id, position: loggedUser.position },
+    { id: loggedUser.id, role: loggedUser.role },
     config.server.token.secret,
     {
       expiresIn: "1d",

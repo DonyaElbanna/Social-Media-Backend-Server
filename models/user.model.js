@@ -11,9 +11,14 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true,
+    minlength: 6,
     select: false,
   },
-  position: {
+  avatar: {
+    type: String,
+    default: "https://shorturl.at/lorFV",
+  },
+  role: {
     type: String,
     enum: ["admin", "creator", "user"],
     default: "user",

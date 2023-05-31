@@ -8,14 +8,15 @@ const {
   deleteUser,
 } = require("../controllers/user.controller");
 const verifyToken = require("../utils/tokenVerification");
+const authenticate = require("../utils/authentication");
 
 router.get("", getAllUsers);
 
 router.get("/:id", getSingleUser);
 
-router.post("", addUser);
+router.post("", authenticate, addUser);
 
-router.patch("/:id", verifyToken, editUser);
+router.patch("/:id", verifyToken, authenticate, editUser);
 
 router.delete("/:id", verifyToken, deleteUser);
 

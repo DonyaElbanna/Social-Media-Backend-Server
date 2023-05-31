@@ -1,6 +1,7 @@
 const Post = require("../models/post.model");
 const AppError = require("../utils/Error");
 
+// only logged user can get thier posts
 const getAllPosts = async (req, res, next) => {
   const userId = req.user.id;
   const posts = await Post.find({ user: userId }).populate("user");
@@ -25,33 +26,39 @@ const getSinglePost = async (req, res, next) => {
   }
 };
 
+// only logged user can add a post
 const addPost = async (req, res, next) => {
   const { post } = req.body;
-  const userId = req.user.id;
+  const user = req.user;
+  // const userId = req.user.id;
   if (!post) {
     return next(new AppError("A post can't be empty", 404));
   }
-  const newPost = await Post.create({ post, user: userId });
+  const newPost = await Post.create({
+    post,
+    user: { _id: user.id, role: "creator" },
+  });
   res.send(newPost);
 };
 
+// logged user can only edit their posts
 const editPost = async (req, res, next) => {
   const { id } = req.params;
   const { post } = req.body;
-  const userId = req.user.id;
+  const user = req.user;
   if (!post) {
     return next(new AppError("A post can't be empty", 404));
   }
   try {
     const editedPost = await Post.findOneAndUpdate(
-      { _id: id, user: userId },
-      {post},
+      { _id: id, user: user.id },
+      { post },
       {
         new: true,
       }
     );
     if (!editedPost) {
-      return next(new AppError("Post not found", 404));
+      return next(new AppError("invalid token", 404));
     }
     res.send(editedPost);
   } catch (err) {
@@ -59,15 +66,27 @@ const editPost = async (req, res, next) => {
   }
 };
 
-const deletePost = async(req, res, next) => {
+// only admin and the logged user can delete their posts
+const deletePost = async (req, res, next) => {
   const { id } = req.params;
-  const userId = req.user.id;
+  const user = req.user;
   try {
-    const deletedPost = await Post.findOneAndDelete({ _id: id, user: userId });
-    if (!deletedPost) {
-      return next(new AppError("Post not found", 404));
+    if (user.role == "admin") {
+      const deletedPost = await Post.findByIdAndDelete(id);
+      if (!deletedPost) {
+        return next(new AppError("Post not found", 404));
+      }
+      res.send(deletedPost);
+    } else {
+      const deletedPost = await Post.findOneAndDelete({
+        _id: id,
+        user: user.id,
+      });
+      if (!deletedPost) {
+        return next(new AppError("invalid token", 404));
+      }
+      res.send(deletedPost);
     }
-    res.send(deletedPost);
   } catch (err) {
     return next(new AppError("Something went wrong!", 404));
   }
