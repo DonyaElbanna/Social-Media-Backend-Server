@@ -4,16 +4,20 @@ const AppError = require("../utils/Error");
 const { config } = require("../config/default.config");
 
 module.exports = async (req, res, next) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    return next(new AppError("No token is provided", 404));
-  }
-  const { id } = jwt.verify(token, config.server.token.secret);
+  try {
+    const token = req.headers.authorization;
+    if (!token) {
+      return next(new AppError("No token is provided", 404));
+    }
+    const { id } = jwt.verify(token, config.server.token.secret);
 
-  const user = await User.findById(id);
-  if (!user) {
-    return next(new AppError("invalid token", 404));
+    const user = await User.findById(id);
+    if (!user) {
+      return next(new AppError("invalid token", 404));
+    }
+    req.user = user;
+    next();
+  } catch (err) {
+    return next(new AppError("token expired", 404));
   }
-  req.user = user;
-  next();
 };

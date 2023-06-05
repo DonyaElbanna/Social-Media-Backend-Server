@@ -3,7 +3,6 @@ const router = express.Router();
 const {
   getAllUsers,
   getSingleUser,
-  addUser,
   editUser,
   deleteUser,
   editAvatar,
@@ -15,7 +14,7 @@ router.get("", getAllUsers);
 
 router.get("/:id", getSingleUser);
 
-router.post("", authenticate, addUser);
+// router.post("", authenticate, addUser);
 
 router.patch("/:id", verifyToken, authenticate, editUser);
 

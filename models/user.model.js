@@ -11,7 +11,7 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true,
-    minlength: 6,
+    minlength: 5,
     select: false,
   },
   avatar: {
@@ -20,7 +20,7 @@ const UserSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "creator", "user"],
+    enum: ["admin", "user"],
     default: "user",
   },
   posts: [

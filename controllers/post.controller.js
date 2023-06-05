@@ -4,8 +4,11 @@ const User = require("../models/user.model");
 
 // only logged user can get all posts
 const getAllPosts = async (req, res, next) => {
-  const posts = await Post.find().populate("user").populate("comments");
-  // ! populate("comments")
+  const posts = await Post.find()
+    .populate("user")
+    .populate("comments")
+    .populate("reviews");
+
   if (!posts) {
     return next(new AppError("No posts found for this user!", 404));
   }
@@ -15,7 +18,7 @@ const getAllPosts = async (req, res, next) => {
 // logged user can get their own posts
 // const getUserAllPosts = async (req, res, next) => {
 //   const userId = req.user.id;
-//   const posts = await Post.find({ user: userId }).populate("user");
+//   const posts = await Post.find({ user: userId }).populate("user").populate("comments").populate("reviews");;
 //   // ! populate("comments")
 //   if (!posts) {
 //     return next(new AppError("No posts found for this user!", 404));
@@ -27,7 +30,7 @@ const getSinglePost = async (req, res, next) => {
   const { id } = req.params;
   const userId = req.user.id;
   try {
-    const singlePost = await Post.find({ _id: id, user: userId });
+    const singlePost = await Post.find({ _id: id });
     if (!singlePost || singlePost.length == 0) {
       return next(new AppError("Post not found", 404));
     }

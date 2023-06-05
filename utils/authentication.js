@@ -3,7 +3,7 @@ const AppError = require("../utils/Error");
 
 const authenticationSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).max(20).required(),
+  password: Joi.string().min(5).max(20).required(),
 });
 
 const authenticate = (req, res, next) => {

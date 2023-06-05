@@ -3,22 +3,26 @@ const bodyParser = require("body-parser");
 const app = express();
 const { config } = require("./config/default.config");
 const port = config.server.port;
+
+const loginRoute = require("./routes/login.route");
+const signupRoute = require("./routes/signup.route");
+const userRoute = require("./routes/user.route");
+const postRoute = require("./routes/post.route");
+const commentRoute = require("./routes/comment.route");
+const reviewRoute = require("./routes/review.route");
+const verifyToken = require("./utils/tokenVerification");
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ extended: true }));
 
-const authRoutes = require("./routes/auth.routes");
-const userRoutes = require("./routes/user.routes");
-const postRoutes = require("./routes/post.routes");
-const commentRoutes = require("./routes/comment.routes");
-// const
-const verifyToken = require("./utils/tokenVerification");
-
 // routes
-app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
-app.use("/post", verifyToken, postRoutes);
-app.use("/post", verifyToken, commentRoutes);
-app.use("/post", verifyToken, commentRoutes);
+app.use("/login", loginRoute);
+app.use("/signup", signupRoute);
+app.use("/user", verifyToken, userRoute);
+app.use("/post", verifyToken, postRoute);
+app.use("/post", verifyToken, commentRoute);
+app.use("/post", verifyToken, reviewRoute);
+// app.use("/images/")
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

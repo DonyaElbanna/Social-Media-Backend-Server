@@ -23,18 +23,6 @@ const getSingleUser = async (req, res, next) => {
   res.status(200).json({ user });
 };
 
-const addUser = async (req, res, next) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  //! error if removed, why?
-  if (user) {
-    return next(new AppError("This email is already registered", 404));
-  }
-  const newUser = await User.create({ email, password });
-  newUser.password = undefined;
-  res.status(201).json(newUser);
-};
-
 // only logged user can edit their info
 const editUser = async (req, res, next) => {
   const { id } = req.params;
@@ -69,6 +57,9 @@ const deleteUser = async (req, res, next) => {
   try {
     if (loggedUser.role == "admin" || loggedUser.id == id) {
       const deletedUser = await User.findByIdAndDelete(id);
+      if (!deletedUser) {
+        return next(new AppError("user not found", 404));
+      }
       res.status(200).json({ deletedUser });
     } else {
       return next(new AppError("invalid token", 404));
@@ -104,7 +95,6 @@ const editAvatar = async (req, res, next) => {
 module.exports = {
   getAllUsers,
   getSingleUser,
-  addUser,
   editUser,
   deleteUser,
   editAvatar,
