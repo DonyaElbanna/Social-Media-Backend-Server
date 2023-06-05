@@ -13,7 +13,7 @@ const getAllUsers = async (req, res, next) => {
 const getSingleUser = async (req, res, next) => {
   const { id } = req.params;
   try {
-    var user = await User.findById(id);
+    var user = await User.findById(id).populate("posts");
     if (!user) {
       return next(new AppError("User not found", 404));
     }

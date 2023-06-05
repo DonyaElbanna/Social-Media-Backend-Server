@@ -95,19 +95,29 @@ const deleteComment = async (req, res, next) => {
         _id: id,
         post: postid,
       });
+      const updatedPost = await Post.findOneAndUpdate(
+        { _id: postid },
+        { $pull: { comments: id } },
+        { new: true }
+      );
       if (!deletedComment) {
         return next(new AppError("Comment/post not found", 404));
       }
-      res.status(200).json({ deletedComment });
+      res.status(200).json({ deletedComment, updatedPost });
     } else {
       const deletedComment = await Comment.findOneAndDelete({
         _id: id,
         user: user.id,
       });
+      const updatedPost = await Post.findOneAndUpdate(
+        { _id: postid },
+        { $pull: { comments: id } },
+        { new: true }
+      );
       if (!deletedComment) {
         return next(new AppError("invalid token", 401));
       }
-      res.status(200).json({ deletedComment });
+      res.status(200).json({ deletedComment, updatedPost });
     }
   } catch (err) {
     return next(new AppError("Something went wrong!", 404));

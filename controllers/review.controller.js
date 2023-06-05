@@ -5,7 +5,7 @@ const Post = require("../models/post.model");
 const getAllReviews = async (req, res, next) => {
   const { postid } = req.params;
   try {
-    const reviews = await Comment.find({ post: postid });
+    const reviews = await Review.find({ post: postid });
     if (reviews.length == 0) {
       return next(new AppError("review not found!", 404));
     }
@@ -32,20 +32,28 @@ const addReview = async (req, res, next) => {
   const { postid } = req.params;
   const user = req.user;
   const { review } = req.body;
-  if (!review) {
-    return next(new AppError("A review can't be empty", 404));
+  try {
+    const post = await Post.find({ _id: postid });
+    if (post.length == 0) {
+      return next(new AppError("This post can't be found", 404));
+    }
+    if (!review) {
+      return next(new AppError("A review can't be empty", 404));
+    }
+    const newReview = await Review.create({
+      review,
+      post: postid,
+      user: user.id,
+    });
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postid },
+      { $addToSet: { reviews: newReview._id } },
+      { new: true }
+    );
+    res.status(200).json({ newReview, updatedPost });
+  } catch (err) {
+    return next(new AppError("Something went wrong!", 404));
   }
-  const newReview = await Review.create({
-    review,
-    post: postid,
-    user: user.id,
-  });
-  const updatedPost = await Post.findOneAndUpdate(
-    { _id: postid },
-    { $addToSet: { reviews: newReview._id } },
-    { new: true }
-  );
-  res.status(200).json({ newReview, updatedPost });
 };
 
 // only logged user can edit their own comments
