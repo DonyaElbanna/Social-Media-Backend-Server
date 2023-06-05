@@ -2,6 +2,7 @@ const Review = require("../models/review.model");
 const AppError = require("../utils/Error");
 const Post = require("../models/post.model");
 
+// getting all reviews on a post
 const getAllReviews = async (req, res, next) => {
   const { postid } = req.params;
   try {
@@ -56,7 +57,7 @@ const addReview = async (req, res, next) => {
   }
 };
 
-// only logged user can edit their own comments
+// only logged user can edit their own reviews
 const editReview = async (req, res, next) => {
   const { postid, id } = req.params;
   const user = req.user;
@@ -81,28 +82,30 @@ const editReview = async (req, res, next) => {
   }
 };
 
+// comment's creator an delete their review on a post
 const deleteReview = async (req, res, next) => {
   const { postid, id } = req.params;
   const user = req.user;
+
+  const review = await Review.find({ _id: id, post: postid });
+  if (review.length == 0) {
+    return next(new AppError("Review not found", 404));
+  }
+
   try {
-    // if (user.role == "admin") {
-    //   const deletedReview = await Review.findOneAndDelete({
-    //     _id: id,
-    //     post: postid,
-    //   });
-    //   if (!deletedReview) {
-    //     return next(new AppError("Review not found", 404));
-    //   }
-    //   res.status(200).json({ deletedReview });
-    // } else {
     const deletedReview = await Review.findOneAndDelete({
       _id: id,
       user: user.id,
     });
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postid },
+      { $pull: { reviews: id } },
+      { new: true }
+    );
     if (!deletedReview) {
       return next(new AppError("invalid token", 401));
     }
-    res.status(200).json({ deletedReview });
+    res.status(200).json({ deletedReview, updatedPost });
     // }
   } catch (err) {
     return next(new AppError("Something went wrong!", 404));

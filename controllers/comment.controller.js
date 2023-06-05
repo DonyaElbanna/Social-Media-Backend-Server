@@ -2,6 +2,7 @@ const Comment = require("../models/comment.model");
 const AppError = require("../utils/Error");
 const Post = require("../models/post.model");
 
+// getting all comments on a post
 const getAllComments = async (req, res, next) => {
   const { postid } = req.params;
   try {
@@ -81,6 +82,7 @@ const editComment = async (req, res, next) => {
   }
 };
 
+// comment's creator or the admin can delete a comment on a post
 const deleteComment = async (req, res, next) => {
   const { postid, id } = req.params;
   const user = req.user;
