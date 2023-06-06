@@ -3,14 +3,20 @@ const AppError = require("../utils/Error");
 
 const cloudinary = require("../utils/cloudinary");
 
-// only user can edit their avatar
-const uploadImg = async (req, res, next) => {
+const {
+  NOT_PROCESSED,
+  UNAUTHORIZED_ACCESS,
+  FAILURE,
+} = require("../utils/namespace.util");
+
+// only user can edit/add avatar
+const uploadAvatar = async (req, res, next) => {
   const { id } = req.params;
   const { avatar } = req.body;
   const loggedUser = req.user;
 
   if (!avatar) {
-    return next(new AppError("No picture provided", 404));
+    return next(new AppError(NOT_PROCESSED, 400));
   } else if (loggedUser.id == id) {
     try {
       // Upload image to cloudinary
@@ -21,13 +27,13 @@ const uploadImg = async (req, res, next) => {
       await editedUser.save();
       res.status(200).json({ editedUser });
     } catch (err) {
-      return next(new AppError("Something went wrong", 404));
+      return next(new AppError(FAILURE, 404));
     }
   } else {
-    return next(new AppError("invalid token", 404));
+    return next(new AppError(UNAUTHORIZED_ACCESS, 401));
   }
 };
 
 module.exports = {
-  uploadImg,
+  uploadAvatar,
 };

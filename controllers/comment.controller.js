@@ -2,17 +2,24 @@ const Comment = require("../models/comment.model");
 const AppError = require("../utils/Error");
 const Post = require("../models/post.model");
 
+const {
+  NOT_FOUND,
+  FAILURE,
+  NOT_PROCESSED,
+  UNAUTHORIZED_ACCESS,
+} = require("../utils/namespace.util");
+
 // getting all comments on a post
 const getAllComments = async (req, res, next) => {
   const { postid } = req.params;
   try {
     const comments = await Comment.find({ post: postid });
     if (comments.length == 0) {
-      return next(new AppError("post not found!", 404));
+      return next(new AppError(NOT_FOUND, 404));
     }
     res.status(200).json({ comments });
   } catch (err) {
-    return next(new AppError("something went wrong!", 404));
+    return next(new AppError(FAILURE, 404));
   }
 };
 
@@ -21,11 +28,11 @@ const getSingleComment = async (req, res, next) => {
   try {
     const comment = await Comment.findOne({ _id: id, post: postid });
     if (!comment) {
-      return next(new AppError("post/comment not found!", 404));
+      return next(new AppError(NOT_FOUND, 404));
     }
     res.status(200).json({ comment });
   } catch (err) {
-    return next(new AppError("something went wrong!", 404));
+    return next(new AppError(FAILURE, 404));
   }
 };
 
@@ -36,10 +43,10 @@ const addComment = async (req, res, next) => {
   try {
     const post = await Post.find({ _id: postid });
     if (post.length == 0) {
-      return next(new AppError("This post can't be found", 404));
+      return next(new AppError(NOT_FOUND, 404));
     }
     if (!comment) {
-      return next(new AppError("A comment can't be empty", 404));
+      return next(new AppError(NOT_PROCESSED, 400));
     }
     const newComment = await Comment.create({
       comment,
@@ -53,7 +60,7 @@ const addComment = async (req, res, next) => {
     );
     res.status(200).json({ newComment, updatedPost });
   } catch (err) {
-    return next(new AppError("Something went wrong!", 404));
+    return next(new AppError(FAILURE, 404));
   }
 };
 
@@ -63,7 +70,7 @@ const editComment = async (req, res, next) => {
   const user = req.user;
   const { comment } = req.body;
   if (!comment) {
-    return next(new AppError("A comment can't be empty", 404));
+    return next(new AppError(NOT_PROCESSED, 400));
   }
   try {
     const editedComment = await Comment.findOneAndUpdate(
@@ -74,11 +81,11 @@ const editComment = async (req, res, next) => {
       }
     );
     if (!editedComment) {
-      return next(new AppError("invalid token", 401));
+      return next(new AppError(UNAUTHORIZED_ACCESS, 401));
     }
     res.status(200).json({ editedComment });
   } catch (err) {
-    return next(new AppError("Something went wrong!", 404));
+    return next(new AppError(FAILURE, 404));
   }
 };
 
@@ -89,7 +96,7 @@ const deleteComment = async (req, res, next) => {
 
   const comment = await Comment.find({ _id: id, post: postid });
   if (comment.length == 0) {
-    return next(new AppError("Comment not found", 404));
+    return next(new AppError(NOT_FOUND, 404));
   }
   try {
     if (user.role == "admin") {
@@ -103,7 +110,7 @@ const deleteComment = async (req, res, next) => {
         { new: true }
       );
       if (!deletedComment) {
-        return next(new AppError("Comment/post not found", 404));
+        return next(new AppError(NOT_FOUND, 404));
       }
       res.status(200).json({ deletedComment, updatedPost });
     } else {
@@ -117,12 +124,12 @@ const deleteComment = async (req, res, next) => {
         { new: true }
       );
       if (!deletedComment) {
-        return next(new AppError("invalid token", 401));
+        return next(new AppError(UNAUTHORIZED_ACCESS, 401));
       }
       res.status(200).json({ deletedComment, updatedPost });
     }
   } catch (err) {
-    return next(new AppError("Something went wrong!", 404));
+    return next(new AppError(FAILURE, 404));
   }
 };
 

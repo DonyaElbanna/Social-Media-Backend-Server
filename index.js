@@ -1,22 +1,39 @@
-const app = require("./app");
-// const http = require("http");
-const mongoose = require("mongoose");
-const {config} = require("./config/default.config");
-const DB_CONNECTED = require("./utils/namespace.util").namespace.DB_CONNECTED;
+const express = require("express");
+const bodyParser = require("body-parser");
+const app = express();
+require("./db");
+const { config } = require("./config/default.config");
+const port = config.server.port;
 
-mongoose
-  .connect(config.db.uri)
-  .then(() => {
-    console.log(DB_CONNECTED);
-    // InitServer();
-  })
-  .catch((error) => {
-    console.log(error);
+const loginRoute = require("./routes/login.route");
+const signupRoute = require("./routes/signup.route");
+const userRoute = require("./routes/user.route");
+const avatarRoute = require("./routes/avatar.route");
+const postRoute = require("./routes/post.route");
+const commentRoute = require("./routes/comment.route");
+const reviewRoute = require("./routes/review.route");
+const verifyToken = require("./utils/tokenVerification");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ extended: true }));
+
+// routes
+app.use("/login", loginRoute);
+app.use("/signup", signupRoute);
+app.use("/user", verifyToken, userRoute);
+app.use("/user", verifyToken, avatarRoute);
+app.use("/post", verifyToken, postRoute);
+app.use("/post", verifyToken, commentRoute);
+app.use("/post", verifyToken, reviewRoute);
+
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).send({
+    status: statusCode,
+    message: err?.message || "internal server error",
   });
-// const InitServer = () => {
-//   http
-//     .createServer(app)
-//     .listen(config.server.port, () =>
-//       console.log(`Server is running on port ${config.server.port}`)
-//     );
-// };
+});
+
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});

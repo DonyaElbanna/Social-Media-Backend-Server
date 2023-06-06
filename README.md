@@ -64,7 +64,7 @@ Launches the server at [http://localhost:9999](http://localhost:9999) and connec
 │ ├── multer.js
 │ └── cloudinary.js
 ├── .gitignore
-├── app.js
+├── db.js
 ├── index.js
 ├── package-lock.json
 ├── package.json
