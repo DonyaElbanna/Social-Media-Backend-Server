@@ -5,7 +5,7 @@ const { config } = require("../config/default.config");
 const {
   NO_TOKEN,
   UNAUTHORIZED_ACCESS,
-  TOKEN_EXPIRED,
+  INVALID_TOKEN,
 } = require("../utils/namespace.util");
 
 module.exports = async (req, res, next) => {
@@ -23,6 +23,6 @@ module.exports = async (req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
-    return next(new AppError(UNAUTHORIZED_ACCESS, 401));
+    return next(new AppError(INVALID_TOKEN, 401));
   }
 };
