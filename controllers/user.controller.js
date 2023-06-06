@@ -69,33 +69,31 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-// only user can edit their avatar
-const editAvatar = async (req, res, next) => {
-  const { id } = req.params;
-  const { avatar } = req.body;
-  const loggedUser = req.user;
-  if (!avatar) {
-    return next(new AppError("No picture provided", 404));
-  } else if (loggedUser.id == id) {
-    try {
-      const editedUser = await User.findById(id);
-      if (editedUser.avatar !== avatar) {
-        editedUser.avatar = avatar;
-      }
-      await editedUser.save();
-      res.status(200).json({ editedUser });
-    } catch (err) {
-      return next(new AppError("Something went wrong", 404));
-    }
-  } else {
-    return next(new AppError("invalid token", 404));
-  }
-};
+// const editAvatar = async (req, res, next) => {
+//   const { id } = req.params;
+//   const { avatar } = req.body;
+//   const loggedUser = req.user;
+//   if (!avatar) {
+//     return next(new AppError("No picture provided", 404));
+//   } else if (loggedUser.id == id) {
+//     try {
+//       const editedUser = await User.findById(id);
+//       if (editedUser.avatar !== avatar) {
+//         editedUser.avatar = avatar;
+//       }
+//       await editedUser.save();
+//       res.status(200).json({ editedUser });
+//     } catch (err) {
+//       return next(new AppError("Something went wrong", 404));
+//     }
+//   } else {
+//     return next(new AppError("invalid token", 404));
+//   }
+// };
 
 module.exports = {
   getAllUsers,
   getSingleUser,
   editUser,
   deleteUser,
-  editAvatar,
 };

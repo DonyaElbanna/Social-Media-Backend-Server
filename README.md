@@ -2,15 +2,19 @@
 
 ## Description
 
-This project is created using Express.js for the server and mongoose for the database. It contains role based authorization (admin and user) and authentication features. CRUD operations for User, Post, Comment and Review models
+This project is created using Express.js for the server and mongoose for the database. It contains role based authorization (admin and user) and authentication features, Error handing and CRUD operations for User, Post, Comment and Review models.
 
 ## Technologies used
 
 - [Express.js](https://expressjs.com/)
 - [Mongoose](https://mongoosejs.com/)
+- [express-async-errors](https://www.npmjs.com/package/express-async-errors)
 - [Joi](https://www.npmjs.com/package/joi)
 - [bcrypt](https://www.npmjs.com/package/bcrypt)
 - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
+- [multer](https://www.npmjs.com/package/multer)
+- [cloudinary](https://www.npmjs.com/package/cloudinary)
+- [multer-storage-cloudinary](https://www.npmjs.com/package/multer-storage-cloudinary)
 
 ## Available Scripts
 
@@ -32,6 +36,7 @@ Launches the server at [http://localhost:9999](http://localhost:9999) and connec
 ├── config/
 │ └── default.config.js
 ├── controllers/
+│ ├── avatar.controller.js
 │ ├── signup.controller.js
 │ ├── login.controller.js
 │ ├── user.controller.js
@@ -44,6 +49,7 @@ Launches the server at [http://localhost:9999](http://localhost:9999) and connec
 │ ├── comment.model.js
 │ └── review.model.js
 ├── routes/
+│ ├── avatar.route.js
 │ ├── signup.route.js
 │ ├── login.route.js
 │ ├── user.route.js
@@ -54,7 +60,9 @@ Launches the server at [http://localhost:9999](http://localhost:9999) and connec
 │ ├── authentication.js
 │ ├── Error.js
 │ ├── tokenVerification.js
-│ └── namespace.util.js
+│ ├── namespace.util.js
+│ ├── multer.js
+│ └── cloudinary.js
 ├── .gitignore
 ├── app.js
 ├── index.js
@@ -69,16 +77,14 @@ Launches the server at [http://localhost:9999](http://localhost:9999) and connec
 
 - Signup-add user: `POST` request at `/signup`
 
-**(requires authorization)**
-
-### User
+### User **(requires authorization)**
 
 - get all users: `GET` request at `/user`
 - get single user: `GET` request at `/user/:id`
 - edit user (only creator): `PATCH` request at `/user/:id`
 - delete user (only admin or creator): `DELETE` request at `/user/:id`
 
-### Post
+### Post **(requires authorization)**
 
 - get all posts: `GET` request at `/post`
 - get single post: `GET` request at `/post/:id`
@@ -86,7 +92,7 @@ Launches the server at [http://localhost:9999](http://localhost:9999) and connec
 - edit post (only creator): `PATCH` request at `/post/:id`
 - delete post (only admin or creator): `DELETE` request at `/post/:id`
 
-### Comment
+### Comment **(requires authorization)**
 
 - get all comments: `GET` request at `/comment`
 - get single comment: `GET` request at `/post/:id/comment/:id`
@@ -94,7 +100,7 @@ Launches the server at [http://localhost:9999](http://localhost:9999) and connec
 - edit comment (only creator): `PATCH` request at `/post/:id/comment/:id`
 - delete comment (only admin or creator): `DELETE` request at `/post/:id/comment/:id`
 
-### Review
+### Review **(requires authorization)**
 
 - get all reviews: `GET` request at `/post`
 - get single review: `GET` request at `/post/:id`

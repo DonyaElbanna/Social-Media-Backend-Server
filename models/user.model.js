@@ -29,6 +29,9 @@ const UserSchema = new Schema({
       ref: "Post",
     },
   ],
+  cloudinary_id: {
+    type: String,
+  },
   // image is required
 });
 
