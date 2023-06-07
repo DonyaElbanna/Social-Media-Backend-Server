@@ -13,6 +13,7 @@ const postRoute = require("./routes/post.route");
 const commentRoute = require("./routes/comment.route");
 const reviewRoute = require("./routes/review.route");
 const verifyToken = require("./utils/tokenVerification");
+const topPostsRoute = require("./routes/topPosts.route");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ extended: true }));
@@ -25,6 +26,7 @@ app.use("/user", verifyToken, avatarRoute);
 app.use("/post", verifyToken, postRoute);
 app.use("/post", verifyToken, commentRoute);
 app.use("/post", verifyToken, reviewRoute);
+app.use("/review", verifyToken, topPostsRoute);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

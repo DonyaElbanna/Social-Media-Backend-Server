@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is created using Express.js for the server and mongoose for the database. It contains role based authorization (admin and user) and authentication features, Error handing and CRUD operations for User, Post, Comment and Review models.
+This project is built using Express.js for the server and mongoose for the database. It contains role based authorization (admin and user) and authentication features, Error handling, implements CRUD operations for User, Post, Comment and Review models and uses mongodb aggregation pipelines to get the top rated posts by users.
 
 ## Technologies used
 
@@ -42,7 +42,8 @@ Launches the server at [http://localhost:9999](http://localhost:9999) and connec
 │ ├── user.controller.js
 │ ├── post.controller.js
 │ ├── comment.controllerjs
-│ └── review.controllerjs
+│ ├── review.controllerjs
+│ └── topPosts.controllerjs
 ├── models/
 │ ├── user.mdel.js
 │ ├── post.model.js
@@ -55,7 +56,8 @@ Launches the server at [http://localhost:9999](http://localhost:9999) and connec
 │ ├── user.route.js
 │ ├── post.route.js
 │ ├── comment.route.js
-│ └── review.route.js
+│ ├── review.route.js
+│ └── topPosts.route.js
 ├── utils/
 │ ├── authentication.js
 │ ├── Error.js

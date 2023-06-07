@@ -9,7 +9,7 @@ const {
   UNAUTHORIZED_ACCESS,
 } = require("../utils/namespace.util");
 
-// getting all reviews on a post
+// getting all reviews on a specific post post
 const getAllReviews = async (req, res, next) => {
   const { postid } = req.params;
   try {
@@ -69,7 +69,7 @@ const editReview = async (req, res, next) => {
   const { postid, id } = req.params;
   const user = req.user;
   const { review } = req.body;
-  if (!review) {
+  if (!review || review < 1 || review > 5) {
     return next(new AppError(NOT_PROCESSED, 400));
   }
   try {
