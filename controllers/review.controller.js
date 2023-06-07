@@ -69,17 +69,17 @@ const editReview = async (req, res, next) => {
   const { postid, id } = req.params;
   const user = req.user;
   const { review } = req.body;
-  if (!review || review < 1 || review > 5) {
+  if (!review) {
     return next(new AppError(NOT_PROCESSED, 400));
   }
   try {
-    const editedReview = await Review.findOneAndUpdate(
-      { _id: id, post: postid, user: user.id },
-      { review },
-      {
-        new: true,
-      }
-    );
+    const editedReview = await Review.findOne({
+      _id: id,
+      post: postid,
+      user: user.id,
+    });
+    editedReview.review = review;
+    await editedReview.save();
     if (!editedReview) {
       return next(new AppError(UNAUTHORIZED_ACCESS, 401));
     }
@@ -113,7 +113,6 @@ const deleteReview = async (req, res, next) => {
       return next(new AppError(UNAUTHORIZED_ACCESS, 401));
     }
     res.status(200).json({ deletedReview, updatedPost });
-    // }
   } catch (err) {
     return next(new AppError(FAILURE, 404));
   }
