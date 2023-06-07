@@ -31,7 +31,7 @@ const login = async (req, res, next) => {
     }
   );
 
-  res.send({ loggedUser, token });
+  res.status(200).json({ loggedUser, token });
 };
 
 module.exports = { login };

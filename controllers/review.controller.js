@@ -58,7 +58,7 @@ const addReview = async (req, res, next) => {
       { $addToSet: { reviews: newReview._id } },
       { new: true }
     );
-    res.status(200).json({ newReview, updatedPost });
+    res.status(201).json({ newReview, updatedPost });
   } catch (err) {
     return next(new AppError(FAILURE, 404));
   }

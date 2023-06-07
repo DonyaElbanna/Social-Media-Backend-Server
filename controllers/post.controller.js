@@ -62,7 +62,7 @@ const addPost = async (req, res, next) => {
     { $addToSet: { posts: newPost._id } },
     { new: true }
   );
-  res.status(200).json({ newPost, updatedUser });
+  res.status(201).json({ newPost, updatedUser });
 };
 
 // logged user can only edit their posts

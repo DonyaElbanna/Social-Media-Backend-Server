@@ -25,7 +25,7 @@ const uploadAvatar = async (req, res, next) => {
       editedUser.avatar = image.secure_url;
       editedUser.cloudinary_id = image.public_id;
       await editedUser.save();
-      res.status(200).json({ editedUser });
+      res.status(201).json({ editedUser });
     } catch (err) {
       return next(new AppError(FAILURE, 404));
     }
