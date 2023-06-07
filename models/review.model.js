@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const AppError = require("../utils/Error");
 
 const ReviewSchema = new Schema({
   review: {
