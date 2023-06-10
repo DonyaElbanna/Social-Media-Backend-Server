@@ -72,6 +72,13 @@ Launches the server at [http://localhost:9999](http://localhost:9999) and connec
 ├── package.json
 └── README.md
 ```
+## Users
+
+- (admin): admin@email.com - admin
+- user1@email.com - 11111
+- user2@email.com - 22222
+- user3edited@email.com - 33333
+- user4@email.com - 44444
 
 ## Routes
 
